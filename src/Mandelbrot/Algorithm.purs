@@ -1,9 +1,11 @@
 module Mandelbrot.Algorithm where
 
 import Prelude
-import Math (sqrt)
 import Data.Array as Array
 import Data.Int (toNumber)
+import Data.Function.Uncurried (Fn5, runFn5)
+
+foreign import calculatePixel :: Fn5 Number Number Number Number Int Number
 
 type Rect = { x :: Number
             , y :: Number
@@ -31,18 +33,11 @@ coordinates w h =
   in { x: x', y: y', w: w', h: h' } 
 
 mandelbrot :: Int -> Int -> Int -> Rect -> Array Number
-mandelbrot iterations width height rect = do
+mandelbrot maxIter width height rect = do
   y <- Array.range 0 (height-1)
   x <- Array.range 0 (width-1)
   let xPos = ((toNumber x) / (toNumber width))
       yPos = ((toNumber y) / (toNumber height))
       x' = rect.x + xPos * rect.w
       y' = rect.y + yPos * rect.h
-  -- divide by iterations to get a value between 0.0 and 1.0
-  [(toNumber (go 0.0 0.0 x' y' iterations)) / (toNumber iterations)]
-  where go zr zi cr ci n =
-          if n > 0 && sqrt ((zr*zr) + (zi*zi)) < 2.0
-          then let zr' = (zr*zr - zi*zi) + cr
-                   zi' = (zi*zr + zr*zi) + ci
-               in go zr' zi' cr ci (n - 1)
-          else n          
+  [(runFn5 calculatePixel 0.0 0.0 x' y' maxIter) / (toNumber maxIter)]

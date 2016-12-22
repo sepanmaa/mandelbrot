@@ -13,7 +13,8 @@
     "purescript-math": "^2.0.0",
     "purescript-integers": "^2.1.0",
     "purescript-canvas": "^2.0.0",
-    "purescript-signal": "^8.0.0"
+    "purescript-signal": "^8.0.0",
+    "purescript-functions": "^2.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^2.0.0"
